@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.1...v1.0.2) (2025-06-06)
+
+
+### Bug Fixes
+
+* include Lua scripts in build ([bb05a04](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/bb05a04c041c8d8b7fe83b2689980ba521c8e4b8))
+
 ## [1.0.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.0...v1.0.1) (2025-06-06)
 
 
