@@ -7,6 +7,21 @@ A Prometheus Exporter that generates metrics by connecting to a Factorio server 
 
 ## Usage
 
+With Docker Compose:
+
+```yaml
+  factorio-rcon-prometheus-exporter:
+    image: sleavely/factorio-rcon-prometheus-exporter:latest
+    restart: unless-stopped
+    environment:
+      # HTTP server options for Prometheus to scrape
+      - HOST=0.0.0.0
+      - PORT=9772
+      # Factorio RCON params
+      - RCON_HOST=my-factorio-server
+      - RCON_PORT=27015
+      - RCON_PASSWORD=
+```
 
 ## Related
 
