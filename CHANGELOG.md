@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.2...v1.0.3) (2025-06-06)
+
+
+### Bug Fixes
+
+* set content headers for prometheus ([6514442](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/6514442e3b03df6c443377ba02e7abbcbda7335d))
+
 ## [1.0.2](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.1...v1.0.2) (2025-06-06)
 
 
