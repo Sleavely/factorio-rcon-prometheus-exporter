@@ -1,0 +1,41 @@
+{
+  "name": "factorio-rcon-prometheus-exporter",
+  "version": "0.0.0",
+  "description": "A Prometheus exporter that connects to a Factorio server via RCON and exports metrics.",
+  "author": "Joakim Hedlund <contact@joakimhedlund.com>",
+  "license": "MIT",
+  "keywords": [
+    "factorio",
+    "prometheus",
+    "prometheus-exporter",
+    "metrics"
+  ],
+  "homepage": "https://github.com/Sleavely/factorio-rcon-prometheus-exporter",
+  "repository": "github:Sleavely/factorio-rcon-prometheus-exporter",
+  "bin": {
+    "cli": "./dist/cli.js",
+    "http": "./dist/http.js"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/**/*.js"
+  ],
+  "scripts": {
+    "dev": "tsx --no-warnings --env-file=.env --watch-path=./bin --watch-path=./src ./bin/cli.ts",
+    "prebuild": "rm -rf dist",
+    "build": "esbuild --bundle --platform=node --packages=external --sourcemap --outdir=./dist/ ./bin/*.ts",
+    "test": "eslint src/ && tsc --noEmit && npm run build"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "rcon-client": "^4.2.5"
+  },
+  "devDependencies": {
+    "@sleavely/eslint-config": "^1.0.1",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.29",
+    "esbuild": "^0.25.5",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
