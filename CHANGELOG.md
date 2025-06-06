@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.0...v1.0.1) (2025-06-06)
+
+
+### Miscellaneous Chores
+
+* release 1.0.1 ([3b03e73](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/3b03e7310a449c5d37a7a2d451710a88e6f6380c))
+
 ## [1.0.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.0...v1.0.0) (2025-06-06)
 
 
