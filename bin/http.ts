@@ -44,7 +44,8 @@ app.get('/', (_req, res) => {
 app.get('/metrics', (_req, res) => {
   rcon.getMetrics()
     .then((metrics) => {
-      // res.set('Content-Type', 'plain/text')
+      res.set('Content-Disposition', 'inline')
+      res.set('Content-Type', 'text/plain; version=0.0.4')
       res.end(metrics)
     })
     .catch((err: unknown) => {
