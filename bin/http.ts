@@ -10,7 +10,7 @@ const {
   /**
    * Port for the HTTP server
    */
-  PORT = '3000',
+  PORT = '9772',
   /**
    * IP or Hostname for the RCON server
    */
