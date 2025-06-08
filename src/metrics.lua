@@ -93,6 +93,14 @@ for surfaceName, surface in pairs(game.surfaces) do
   }, itemStatistics)
 
   --------------------------------------------------------------------
+  -- Fluid production
+  --------------------------------------------------------------------
+  local fluidStatistics = game.forces.player.get_fluid_production_statistics(surfaceName)
+  metric_from_flow_statistics('fluid', {
+    surface=surface.name,
+  }, fluidStatistics)
+
+  --------------------------------------------------------------------
   -- Placed buildings.
   -- Currently placed buildings = production minus consumption
   --------------------------------------------------------------------
