@@ -7,6 +7,9 @@ A Prometheus Exporter that generates metrics by connecting to a Factorio server 
 
 ## Usage
 
+> [!CAUTION]
+> This will disable achievements because Factorio does not differentiate between reading and writing when using the Lua API.
+
 With Docker Compose:
 
 ```yaml
