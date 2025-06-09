@@ -26,6 +26,17 @@ With Docker Compose:
       - RCON_PASSWORD=
 ```
 
+Then, in your Prometheus configuration:
+
+```yaml
+scrape_configs:
+  - job_name: factorio
+    scrape_interval: 60s
+    static_configs:
+    - targets:
+      - factorio-rcon-prometheus-exporter:9772
+```
+
 ## Related
 
 - [janten/factorio-stats](https://github.com/janten/factorio-stats)
