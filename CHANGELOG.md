@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.3...v1.1.0) (2025-06-08)
+
+
+### Features
+
+* fluid production statistics ([94a03f6](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/94a03f6a5fb6ab393175225cd57087bc2207cd0c))
+* HELP and TYPE annotations. group by metric ([33da38f](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/33da38f5502fe7b5b479fbd8f63c4b735b489aca))
+
+
+### Bug Fixes
+
+* **http:** default to bind port 9772 ([1d0a4dd](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/1d0a4dd23904734fb55045a0e31aa449ef889d11))
+
 ## [1.0.3](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.2...v1.0.3) (2025-06-06)
 
 
