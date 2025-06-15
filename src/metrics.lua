@@ -152,3 +152,16 @@ for surfaceName, surface in pairs(game.surfaces) do
     surface=surface.name,
   }, buildCountStatistics, false, 'Placed and demolished buildings. Currently placed buildings = production minus consumption.')
 end
+
+--------------------------------------------------------------------
+-- Kill counts
+--------------------------------------------------------------------
+for surfaceName, surface in pairs(game.surfaces) do
+  for forceName, force in pairs(game.forces) do
+      local killCountStatistics = force.get_kill_count_statistics(surfaceName)
+      metric_from_flow_statistics('kills', {
+        surface=surface.name,
+        force=force.name,
+      }, killCountStatistics, true, 'Entities killed by forces such as players, enemy, or neutral.')
+  end
+end
