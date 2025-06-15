@@ -47,24 +47,24 @@ local function metric_from_flow_statistics(metric_name, labels, statistics, inve
         }
     end
 
-    metric_type_and_help('factorio_' .. metric_name .. '_production', 'counter', help_text)
+    metric_type_and_help('factorio_' .. metric_name .. '_production_total', 'counter', help_text)
     for item, amt in pairs(statistics.input_counts) do
-        rcon.print('factorio_' .. metric_name .. '_production{' .. build_labels(labels, {name = item}) .. '} ' .. amt)
+        rcon.print('factorio_' .. metric_name .. '_production_total{' .. build_labels(labels, {name = item}) .. '} ' .. amt)
     end
     rcon.print('')
-    metric_type_and_help('factorio_' .. metric_name .. '_consumption', 'counter', help_text)
+    metric_type_and_help('factorio_' .. metric_name .. '_consumption_total', 'counter', help_text)
     for item, amt in pairs(statistics.output_counts) do
-        rcon.print('factorio_' .. metric_name .. '_consumption{' .. build_labels(labels, {name = item}) .. '} ' .. amt)
+        rcon.print('factorio_' .. metric_name .. '_consumption_total{' .. build_labels(labels, {name = item}) .. '} ' .. amt)
     end
     rcon.print('')
 end
 
 metric_type_and_help('factorio_ticks', 'counter')
-rcon.print('factorio_ticks{} '        .. game.tick)
+rcon.print('factorio_ticks_total{} '        .. game.tick)
 rcon.print('')
 
 metric_type_and_help('factorio_ticks_played', 'counter')
-rcon.print('factorio_ticks_played{} ' .. game.ticks_played)
+rcon.print('factorio_ticks_played_total{} ' .. game.ticks_played)
 rcon.print('')
 
 --------------------------------------------------------------------
@@ -80,14 +80,14 @@ rcon.print('')
 metric_type_and_help('factorio_player_afk_time', 'gauge', 'How many ticks since the last action of this player.')
 for _, p in pairs(game.players) do
     local playerLabels = 'name="' .. esc(p.name) .. '"'
-    rcon.print('factorio_player_afk_time{'      .. playerLabels .. '} ' .. p.afk_time)
+    rcon.print('factorio_player_afk_ticks{'      .. playerLabels .. '} ' .. p.afk_time)
 end
 rcon.print('')
 
 metric_type_and_help('factorio_player_online_time', 'counter', 'How many ticks did this player spend playing this save (all sessions combined).')
 for _, p in pairs(game.players) do
     local playerLabels = 'name="' .. esc(p.name) .. '"'
-    rcon.print('factorio_player_online_time{'   .. playerLabels .. '} ' .. p.online_time)
+    rcon.print('factorio_player_online_total_ticks{'   .. playerLabels .. '} ' .. p.online_time)
 end
 rcon.print('')
 
