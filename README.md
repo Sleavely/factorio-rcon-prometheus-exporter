@@ -41,5 +41,11 @@ scrape_configs:
 
 ## Related
 
+These repositories also export metrics using the RCON approach:
+
 - [janten/factorio-stats](https://github.com/janten/factorio-stats)
 - [Duko/factorio-rcon-prom](https://github.com/Duko/factorio-rcon-prom)
+
+The more popular approach and most complete exporter requires you to install a mod:
+
+- [remijouannet/graftorio2](https://github.com/remijouannet/graftorio2) which
