@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.1.0...v2.0.0) (2025-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* rename metrics according to prometheus naming conventions
+
+### Features
+
+* factorio_electricity_accumulated_total, tracks batteries ([2812cc6](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/2812cc647fb2a1ab98359f01859d8fc5a101e116))
+* factorio_kills_consumption_total and factorio_kills_production_total for all forces ([6fd734c](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/6fd734c535bf15d79a78529ce342881a5f214e72))
+
+
+### Code Refactoring
+
+* rename metrics according to prometheus naming conventions ([1a7d902](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/1a7d902942d32e7499b05220ef3f461558c43b60))
+
 ## [1.1.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.0.3...v1.1.0) (2025-06-08)
 
 
