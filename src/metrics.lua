@@ -114,10 +114,18 @@ for surfaceName, surface in pairs(game.surfaces) do
       tracked_network_ids[net_id] = true
 
       local network = pole.electric_network_statistics
-      metric_from_flow_statistics('electricity', {
+      local labels = {
         surface=surface.name,
         network_id=net_id
-      }, network, true)
+      }
+      metric_from_flow_statistics('electricity', labels, network, true)
+      -- Electric networks are currently the only ones that utilize
+      -- the storage counts of flow statistics, showing accumulator charges.
+      metric_type_and_help('factorio_' .. 'electricity' .. '_accumulated_total', 'counter', 'Accumulator charges in joules.')
+      for item, amt in pairs(network.storage_counts) do
+          rcon.print('factorio_' .. 'electricity' .. '_accumulated_total{' .. build_labels(labels, {name = item}) .. '} ' .. amt)
+      end
+      rcon.print('')
     end
   end
 end
