@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "dev": "tsx --no-warnings --env-file=.env --watch-path=./bin --watch-path=./src ./bin/cli.ts",
+    "once": "tsx --no-warnings --env-file=.env ./bin/cli.ts",
     "prebuild": "rm -rf dist",
     "build": "esbuild --bundle --platform=node --packages=external --sourcemap --outdir=./dist/ ./bin/*.ts && cp ./src/*.lua ./dist/",
     "test": "eslint src/ && tsc --noEmit && npm run build"
