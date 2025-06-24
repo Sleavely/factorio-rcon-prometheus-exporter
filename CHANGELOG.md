@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.0.0...v2.0.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* use display names of surfaces in the labels ([adc107f](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/adc107fe1b511f682f233175877d5875622c6668))
+
 ## [2.0.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v1.1.0...v2.0.0) (2025-06-16)
 
 
