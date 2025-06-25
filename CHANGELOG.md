@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.0.1...v2.1.0) (2025-06-25)
+
+
+### Features
+
+* add surface_type label to surface specific metrics ([f8fe59d](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/f8fe59d613cd326cc096964ff4f8b80550e59ce1))
+
 ## [2.0.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.0.0...v2.0.1) (2025-06-24)
 
 

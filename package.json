@@ -1,6 +1,6 @@
 {
   "name": "factorio-rcon-prometheus-exporter",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A Prometheus exporter that connects to a Factorio server via RCON and exports metrics.",
   "author": "Joakim Hedlund <contact@joakimhedlund.com>",
   "license": "MIT",
