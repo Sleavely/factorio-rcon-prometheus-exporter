@@ -13,19 +13,29 @@ local function upper_first(str)
     return first:upper()..remainder:lower()
 end
 
-local function get_surface_display_name(surface)
-    -- Returns the name of the surface, or "unknown" if it is not a valid surface.
+local function get_surface_type(surface)
     if surface and surface.valid then
       if surface.planet and surface.planet.valid then
-        return upper_first(surface.planet.name)
+        return 'planet'
       end
       if surface.platform and surface.platform.valid then
-        return surface.platform.name
+        return 'platform'
       end
-        return surface.name
     else
-        return "unknown"
+        return 'unknown'
     end
+end
+
+local function get_surface_display_name(surface)
+    -- Returns the name of the surface, or "unknown" if it is not a valid surface.
+    local surfaceType = get_surface_type(surface)
+    if surfaceType == 'planet' then
+      return upper_first(surface.planet.name)
+    end
+    if surfaceType == 'platform' then
+      return surface.platform.name
+    end
+    return 'unknown'
 end
 
 -- Outputs formatted labels for one or two tables
@@ -120,6 +130,7 @@ rcon.print('')
 for surfaceName, surface in pairs(game.surfaces) do
   metric_from_flow_statistics('pollution', {
       surface=get_surface_display_name(surface),
+      surface_type=get_surface_type(surface),
   }, surface.pollution_statistics)
 end
 
@@ -138,6 +149,7 @@ for surfaceName, surface in pairs(game.surfaces) do
       local network = pole.electric_network_statistics
       local labels = {
         surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
         network_id=net_id
       }
       metric_from_flow_statistics('electricity', labels, network, true)
@@ -159,6 +171,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local itemStatistics = game.forces.player.get_item_production_statistics(surfaceName)
   metric_from_flow_statistics('item', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, itemStatistics, false, 'Crafted items and consumed components during crafting.')
 end
 
@@ -169,6 +182,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local fluidStatistics = game.forces.player.get_fluid_production_statistics(surfaceName)
   metric_from_flow_statistics('fluid', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, fluidStatistics, false, 'Produced fluids and consumed fluids during crafting.')
 end
 
@@ -180,6 +194,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local buildCountStatistics = game.forces.player.get_entity_build_count_statistics(surfaceName)
   metric_from_flow_statistics('placement', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, buildCountStatistics, false, 'Placed and demolished buildings. Currently placed buildings = production minus consumption.')
 end
 
@@ -191,6 +206,7 @@ for surfaceName, surface in pairs(game.surfaces) do
       local killCountStatistics = force.get_kill_count_statistics(surfaceName)
       metric_from_flow_statistics('kills', {
         surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
         force=force.name,
       }, killCountStatistics, true, 'Entities killed by forces such as players, enemy, or neutral.')
   end
