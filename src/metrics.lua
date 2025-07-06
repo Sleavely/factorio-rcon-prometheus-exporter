@@ -123,6 +123,31 @@ for _, p in pairs(game.players) do
 end
 rcon.print('')
 
+--------------------------------------------------------------------
+-- Science
+-- We only track research units produced. For consumption of the individual science packs,
+-- you can graph their factorio_item_consumption_total metrics with this PromQL query:
+-- increase(factorio_item_consumption_total{name=~".*-science-pack"}[$__rate_interval])
+--------------------------------------------------------------------
+metric_type_and_help('factorio_science_production_total', 'counter', 'Research units produced')
+local accumulated_science = 0
+for _, technology in pairs(game.forces.player.technologies) do
+  local science_on_this_tech = 0
+  if (technology.researched) then
+    science_on_this_tech = technology.research_unit_count
+  elseif (technology.saved_progress > 0) then
+    -- saved_progress is only updated when a technology was removed from active research,
+    -- so we need to differentiate it from the currently active research
+    if not (technology == game.forces.player.current_research) then
+      science_on_this_tech = math.floor(technology.saved_progress * technology.research_unit_count)
+    end
+  end
+  accumulated_science = accumulated_science + science_on_this_tech
+end
+if (game.forces.player.current_research) then
+  accumulated_science = accumulated_science + math.floor(game.forces.player.research_progress * game.forces.player.current_research.research_unit_count)
+end
+rcon.print('factorio_science_production_total{} ' .. accumulated_science)
 
 --------------------------------------------------------------------
 -- Pollution
