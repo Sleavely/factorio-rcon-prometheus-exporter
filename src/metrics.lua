@@ -236,3 +236,60 @@ for surfaceName, surface in pairs(game.surfaces) do
       }, killCountStatistics, true, 'Entities killed by forces such as players, enemy, or neutral.')
   end
 end
+
+---------------------------------------------------------------------
+-- Available Items
+-- Items on belts, chests, assembler outputs, etc.
+---------------------------------------------------------------------
+for surfaceName, surface in pairs(game.surfaces) do
+  local itemCountsByName = {}
+  local function updateItemCount(itemNameAndQuality, count)
+    if not itemCountsByName[itemNameAndQuality] then
+      itemCountsByName[itemNameAndQuality] = 0
+    end
+    itemCountsByName[itemNameAndQuality] = itemCountsByName[itemNameAndQuality] + count
+  end
+
+  local function countInventoryOrTransportLine(inventoryOrTransportLine)
+    if inventoryOrTransportLine then
+      local contents = inventoryOrTransportLine.get_contents()
+      for _, item in pairs(contents) do
+        local itemNameAndQuality = item.name
+        updateItemCount(itemNameAndQuality, item.count)
+      end
+    end
+  end
+
+  local entitiesWithItemsInOrOn = surface.find_entities_filtered({force = "player", has_items_inside = true})
+  for _, entity in pairs(entitiesWithItemsInOrOn) do
+    if entity.valid and not (entity.type == 'entity-ghost') and not (entity.type == 'tile-ghost') then
+
+      -- Chests and assemblers use output inventories
+      countInventoryOrTransportLine(entity.get_output_inventory())
+
+      -- Inserters use held_stack
+      if (entity.type == 'inserter') then
+        local item = entity.held_stack
+        if item.valid_for_read then
+          local itemNameAndQuality = item.name
+          updateItemCount(itemNameAndQuality, item.count)
+        end
+      end
+
+      -- Belts use transport lines
+      if (entity.type == 'transport-belt') or (entity.type == 'splitter') or (entity.type == 'underground-belt') then
+        for i = 1, entity.get_max_transport_line_index() do
+          countInventoryOrTransportLine(entity.get_transport_line(i))
+        end
+      end
+    end
+  end
+  for itemName, count in pairs(itemCountsByName) do
+      metric_type_and_help('factorio_available_items', 'gauge', 'Items on belts, in chests, assembler outputs, etc.')
+      rcon.print('factorio_available_items{' .. build_labels({
+        surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
+        name=itemName
+      }) .. '} ' .. count)
+  end
+end
