@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.1.0...v2.2.0) (2025-07-06)
+
+
+### Features
+
+* factorio_available_items metric ([0e987d3](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/0e987d3e17a5d3ec25ba753c6f166fcb26da0bed))
+* factorio_science_production_total metric ([1c0a434](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/1c0a434cd1d1a410d0574edb9d4cb3122868e614))
+
 ## [2.1.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.0.1...v2.1.0) (2025-06-25)
 
 
