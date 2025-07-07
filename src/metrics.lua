@@ -254,8 +254,14 @@ end
 ---------------------------------------------------------------------
 -- Available Items
 -- Items on belts, chests, assembler outputs, etc.
+-- Because iterating all entities is expensive and synchronous we only do this
+-- when nobody is online, or according to environment variable.
 ---------------------------------------------------------------------
 for surfaceName, surface in pairs(game.surfaces) do
+  if (process.env.COUNT_AVAILABLE_ITEMS == 'never') or (#game.connected_players > 0 and not (process.env.COUNT_AVAILABLE_ITEMS == 'always')) then
+    break
+  end
+
   local itemCountsByName = {}
   local function updateItemCount(itemNameAndQuality, count)
     if not itemCountsByName[itemNameAndQuality] then
@@ -274,7 +280,7 @@ for surfaceName, surface in pairs(game.surfaces) do
     end
   end
 
-  local entitiesWithItemsInOrOn = surface.find_entities_filtered({force = "player", has_items_inside = true})
+  local entitiesWithItemsInOrOn = surface.find_entities_filtered({force = "player"})
   for _, entity in pairs(entitiesWithItemsInOrOn) do
     if entity.valid and not (entity.type == 'entity-ghost') and not (entity.type == 'tile-ghost') then
 

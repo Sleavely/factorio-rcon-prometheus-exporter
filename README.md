@@ -26,6 +26,10 @@ With Docker Compose:
       - RCON_HOST=my-factorio-server
       - RCON_PORT=27015
       - RCON_PASSWORD=
+      # The factorio_available_items metric counts items on belts, in chests, etc.
+      # This can cause the server to momentarily freeze, so by default it only does it when no players are online.
+      # To change this, set COUNT_AVAILABLE_ITEMS to "never", or "always"
+      - COUNT_AVAILABLE_ITEMS=
 ```
 
 Then, in your Prometheus configuration:
