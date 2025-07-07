@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.2.0...v2.2.1) (2025-07-07)
+
+
+### Bug Fixes
+
+* **factorio_science_production_total:** account for infinite research levels ([8fb2b23](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/8fb2b23e37ea72071cadde356f28a8123e8f0665))
+
 ## [2.2.0](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.1.0...v2.2.0) (2025-07-06)
 
 
