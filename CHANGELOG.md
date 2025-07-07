@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.2.1...v2.2.2) (2025-07-07)
+
+
+### Bug Fixes
+
+* **factorio_available_items:** by default, dont export metric when players are online ([8c7ae6b](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/commit/8c7ae6b22478a14b74043286068a8a51fe8e3be4))
+
 ## [2.2.1](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/compare/v2.2.0...v2.2.1) (2025-07-07)
 
 
