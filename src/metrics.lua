@@ -135,17 +135,31 @@ for _, technology in pairs(game.forces.player.technologies) do
   local science_on_this_tech = 0
   if (technology.researched) then
     science_on_this_tech = technology.research_unit_count
-  elseif (technology.saved_progress > 0) then
+  end
+  if (technology.research_unit_count_formula) then
+    local starting_level = tonumber(technology.name:match(".*%-(%d+)$")) or 1
+    for lvl = starting_level, technology.level do
+      -- Current level of tech will be covered by saved_progress or current_research, if applicable
+      if not (lvl == technology.level) then
+        local science_on_this_level = helpers.evaluate_expression(technology.research_unit_count_formula, { L = lvl, l = lvl })
+        science_on_this_tech = science_on_this_tech + science_on_this_level
+      end
+    end
+  end
+  if (technology.saved_progress > 0) then
     -- saved_progress is only updated when a technology was removed from active research,
     -- so we need to differentiate it from the currently active research
     if not (technology == game.forces.player.current_research) then
-      science_on_this_tech = math.floor(technology.saved_progress * technology.research_unit_count)
+      local science_on_this_level = math.floor(technology.saved_progress * technology.research_unit_count)
+      science_on_this_tech = science_on_this_tech + science_on_this_level
     end
   end
+
   accumulated_science = accumulated_science + science_on_this_tech
 end
 if (game.forces.player.current_research) then
-  accumulated_science = accumulated_science + math.floor(game.forces.player.research_progress * game.forces.player.current_research.research_unit_count)
+  local science_on_this_tech = math.floor(game.forces.player.research_progress * game.forces.player.current_research.research_unit_count)
+  accumulated_science = accumulated_science + science_on_this_tech
 end
 rcon.print('factorio_science_production_total{} ' .. accumulated_science)
 
