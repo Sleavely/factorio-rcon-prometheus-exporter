@@ -257,7 +257,7 @@ end
 -- Because iterating all entities is expensive and synchronous we only do this
 -- when nobody is online, or according to environment variable.
 ---------------------------------------------------------------------
-for surfaceName, surface in pairs(game.surfaces) do
+for _, surface in pairs(game.surfaces) do
   if (process.env.COUNT_AVAILABLE_ITEMS == 'never') or (#game.connected_players > 0 and not (process.env.COUNT_AVAILABLE_ITEMS == 'always')) then
     break
   end
