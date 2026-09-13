@@ -117,7 +117,7 @@ rcon.print('')
 --------------------------------------------------------------------
 -- Pollution
 --------------------------------------------------------------------
-for surfaceName, surface in pairs(game.surfaces) do
+for _, surface in pairs(game.surfaces) do
   metric_from_flow_statistics('pollution', {
       surface=get_surface_display_name(surface),
   }, surface.pollution_statistics)
@@ -126,7 +126,7 @@ end
 --------------------------------------------------------------------
 -- Electricity
 --------------------------------------------------------------------
-for surfaceName, surface in pairs(game.surfaces) do
+for _, surface in pairs(game.surfaces) do
   -- Find all unique electric networks by iterating all the poles
   local poles = surface.find_entities_filtered{type = "electric-pole"}
   local tracked_network_ids = {}
@@ -187,7 +187,7 @@ end
 -- Kill counts
 --------------------------------------------------------------------
 for surfaceName, surface in pairs(game.surfaces) do
-  for forceName, force in pairs(game.forces) do
+  for _, force in pairs(game.forces) do
       local killCountStatistics = force.get_kill_count_statistics(surfaceName)
       metric_from_flow_statistics('kills', {
         surface=get_surface_display_name(surface),
