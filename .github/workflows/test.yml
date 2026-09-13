@@ -24,4 +24,6 @@ jobs:
       - run: npm test
 
       - name: Lua linting
-        pipelinecomponents/luacheck luacheck src/
+        uses: docker://pipelinecomponents/luacheck
+        with:
+          args: luacheck src/
