@@ -26,7 +26,7 @@
     "dev": "tsx --no-warnings --env-file=.env --watch-path=./bin --watch-path=./src ./bin/cli.ts",
     "prebuild": "rm -rf dist",
     "build": "esbuild --bundle --platform=node --packages=external --sourcemap --outdir=./dist/ ./bin/*.ts && cp ./src/*.lua ./dist/",
-    "luacheck": "docker run -it --rm --volume=\"`pwd`\":\"/${PWD##*/}\" --workdir=\"/${PWD##*/}\" pipelinecomponents/luacheck  luacheck src/",
+    "luacheck": "docker run --rm --volume=\"`pwd`\":\"/${PWD##*/}\" --workdir=\"/${PWD##*/}\" pipelinecomponents/luacheck  luacheck src/",
     "test": "eslint src/ && tsc --noEmit && npm run luacheck && npm run build"
   },
   "dependencies": {
