@@ -7,4 +7,4 @@ std = "lua52"
 
 max_line_length = false
 
-read_globals = {"game", "rcon"}
+read_globals = {"game", "helpers", "process", "rcon"}
