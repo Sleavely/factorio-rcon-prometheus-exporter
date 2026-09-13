@@ -54,4 +54,4 @@ These repositories also export metrics using the RCON approach:
 
 The more popular approach and most complete exporter requires you to install a mod:
 
-- [remijouannet/graftorio2](https://github.com/remijouannet/graftorio2) which
+- [remijouannet/graftorio2](https://github.com/remijouannet/graftorio2)
