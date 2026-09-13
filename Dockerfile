@@ -66,6 +66,7 @@ COPY --from=build /app/dist ./dist
 EXPOSE 9772
 
 ENV NODE_OPTIONS=--enable-source-maps
+ENV COUNT_AVAILABLE_ITEMS="default"
 
 # Run the web server
 CMD ["npm", "exec", "http"]

@@ -3,7 +3,8 @@ import { join } from 'node:path'
 import { Rcon } from 'rcon-client'
 
 export class FactorioRcon extends Rcon {
-  public connected: boolean = false
+  private connected: boolean = false
+  private metricsScript: string | undefined
 
   constructor (host: string, port: number, password: string) {
     super({
@@ -30,9 +31,16 @@ export class FactorioRcon extends Rcon {
 
   async getMetrics (): Promise<string> {
     if (!this.connected) await this.connect()
-    const scriptPath = join(__dirname, 'metrics.lua')
-    const script = await readFile(scriptPath, 'utf-8')
-    return await this.runScript(script)
+    if (!this.metricsScript) {
+      const scriptPath = join(__dirname, 'metrics.lua')
+      const originalScript = await readFile(scriptPath, 'utf-8')
+      // replace occurrences of process.env.VARIABLE with the actual environment variable values
+      this.metricsScript = originalScript.replaceAll(/process\.env\.(\w+)/g, (substr, environmentVariable) => {
+        // eslint-disable-next-line @sleavely/js-rules/destructure-env, @sleavely/js-rules/uppercase-env
+        return JSON.stringify(process.env[environmentVariable] ?? substr)
+      })
+    }
+    return await this.runScript(this.metricsScript)
   }
 
   onConnect = (): void => {

@@ -13,19 +13,29 @@ local function upper_first(str)
     return first:upper()..remainder:lower()
 end
 
-local function get_surface_display_name(surface)
-    -- Returns the name of the surface, or "unknown" if it is not a valid surface.
+local function get_surface_type(surface)
     if surface and surface.valid then
       if surface.planet and surface.planet.valid then
-        return upper_first(surface.planet.name)
+        return 'planet'
       end
       if surface.platform and surface.platform.valid then
-        return surface.platform.name
+        return 'platform'
       end
-        return surface.name
     else
-        return "unknown"
+        return 'unknown'
     end
+end
+
+local function get_surface_display_name(surface)
+    -- Returns the name of the surface, or "unknown" if it is not a valid surface.
+    local surfaceType = get_surface_type(surface)
+    if surfaceType == 'planet' then
+      return upper_first(surface.planet.name)
+    end
+    if surfaceType == 'platform' then
+      return surface.platform.name
+    end
+    return 'unknown'
 end
 
 -- Outputs formatted labels for one or two tables
@@ -113,6 +123,45 @@ for _, p in pairs(game.players) do
 end
 rcon.print('')
 
+--------------------------------------------------------------------
+-- Science
+-- We only track research units produced. For consumption of the individual science packs,
+-- you can graph their factorio_item_consumption_total metrics with this PromQL query:
+-- increase(factorio_item_consumption_total{name=~".*-science-pack"}[$__rate_interval])
+--------------------------------------------------------------------
+metric_type_and_help('factorio_science_production_total', 'counter', 'Research units produced')
+local accumulated_science = 0
+for _, technology in pairs(game.forces.player.technologies) do
+  local science_on_this_tech = 0
+  if (technology.researched) then
+    science_on_this_tech = technology.research_unit_count
+  end
+  if (technology.research_unit_count_formula) then
+    local starting_level = tonumber(technology.name:match(".*%-(%d+)$")) or 1
+    for lvl = starting_level, technology.level do
+      -- Current level of tech will be covered by saved_progress or current_research, if applicable
+      if not (lvl == technology.level) then
+        local science_on_this_level = helpers.evaluate_expression(technology.research_unit_count_formula, { L = lvl, l = lvl })
+        science_on_this_tech = science_on_this_tech + science_on_this_level
+      end
+    end
+  end
+  if (technology.saved_progress > 0) then
+    -- saved_progress is only updated when a technology was removed from active research,
+    -- so we need to differentiate it from the currently active research
+    if not (technology == game.forces.player.current_research) then
+      local science_on_this_level = math.floor(technology.saved_progress * technology.research_unit_count)
+      science_on_this_tech = science_on_this_tech + science_on_this_level
+    end
+  end
+
+  accumulated_science = accumulated_science + science_on_this_tech
+end
+if (game.forces.player.current_research) then
+  local science_on_this_tech = math.floor(game.forces.player.research_progress * game.forces.player.current_research.research_unit_count)
+  accumulated_science = accumulated_science + science_on_this_tech
+end
+rcon.print('factorio_science_production_total{} ' .. accumulated_science)
 
 --------------------------------------------------------------------
 -- Pollution
@@ -120,6 +169,7 @@ rcon.print('')
 for _, surface in pairs(game.surfaces) do
   metric_from_flow_statistics('pollution', {
       surface=get_surface_display_name(surface),
+      surface_type=get_surface_type(surface),
   }, surface.pollution_statistics)
 end
 
@@ -138,6 +188,7 @@ for _, surface in pairs(game.surfaces) do
       local network = pole.electric_network_statistics
       local labels = {
         surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
         network_id=net_id
       }
       metric_from_flow_statistics('electricity', labels, network, true)
@@ -159,6 +210,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local itemStatistics = game.forces.player.get_item_production_statistics(surfaceName)
   metric_from_flow_statistics('item', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, itemStatistics, false, 'Crafted items and consumed components during crafting.')
 end
 
@@ -169,6 +221,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local fluidStatistics = game.forces.player.get_fluid_production_statistics(surfaceName)
   metric_from_flow_statistics('fluid', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, fluidStatistics, false, 'Produced fluids and consumed fluids during crafting.')
 end
 
@@ -180,6 +233,7 @@ for surfaceName, surface in pairs(game.surfaces) do
   local buildCountStatistics = game.forces.player.get_entity_build_count_statistics(surfaceName)
   metric_from_flow_statistics('placement', {
     surface=get_surface_display_name(surface),
+    surface_type=get_surface_type(surface),
   }, buildCountStatistics, false, 'Placed and demolished buildings. Currently placed buildings = production minus consumption.')
 end
 
@@ -191,7 +245,71 @@ for surfaceName, surface in pairs(game.surfaces) do
       local killCountStatistics = force.get_kill_count_statistics(surfaceName)
       metric_from_flow_statistics('kills', {
         surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
         force=force.name,
       }, killCountStatistics, true, 'Entities killed by forces such as players, enemy, or neutral.')
+  end
+end
+
+---------------------------------------------------------------------
+-- Available Items
+-- Items on belts, chests, assembler outputs, etc.
+-- Because iterating all entities is expensive and synchronous we only do this
+-- when nobody is online, or according to environment variable.
+---------------------------------------------------------------------
+for surfaceName, surface in pairs(game.surfaces) do
+  if (process.env.COUNT_AVAILABLE_ITEMS == 'never') or (#game.connected_players > 0 and not (process.env.COUNT_AVAILABLE_ITEMS == 'always')) then
+    break
+  end
+
+  local itemCountsByName = {}
+  local function updateItemCount(itemNameAndQuality, count)
+    if not itemCountsByName[itemNameAndQuality] then
+      itemCountsByName[itemNameAndQuality] = 0
+    end
+    itemCountsByName[itemNameAndQuality] = itemCountsByName[itemNameAndQuality] + count
+  end
+
+  local function countInventoryOrTransportLine(inventoryOrTransportLine)
+    if inventoryOrTransportLine then
+      local contents = inventoryOrTransportLine.get_contents()
+      for _, item in pairs(contents) do
+        local itemNameAndQuality = item.name
+        updateItemCount(itemNameAndQuality, item.count)
+      end
+    end
+  end
+
+  local entitiesWithItemsInOrOn = surface.find_entities_filtered({force = "player"})
+  for _, entity in pairs(entitiesWithItemsInOrOn) do
+    if entity.valid and not (entity.type == 'entity-ghost') and not (entity.type == 'tile-ghost') then
+
+      -- Chests and assemblers use output inventories
+      countInventoryOrTransportLine(entity.get_output_inventory())
+
+      -- Inserters use held_stack
+      if (entity.type == 'inserter') then
+        local item = entity.held_stack
+        if item.valid_for_read then
+          local itemNameAndQuality = item.name
+          updateItemCount(itemNameAndQuality, item.count)
+        end
+      end
+
+      -- Belts use transport lines
+      if (entity.type == 'transport-belt') or (entity.type == 'splitter') or (entity.type == 'underground-belt') then
+        for i = 1, entity.get_max_transport_line_index() do
+          countInventoryOrTransportLine(entity.get_transport_line(i))
+        end
+      end
+    end
+  end
+  for itemName, count in pairs(itemCountsByName) do
+      metric_type_and_help('factorio_available_items', 'gauge', 'Items on belts, in chests, assembler outputs, etc.')
+      rcon.print('factorio_available_items{' .. build_labels({
+        surface=get_surface_display_name(surface),
+        surface_type=get_surface_type(surface),
+        name=itemName
+      }) .. '} ' .. count)
   end
 end

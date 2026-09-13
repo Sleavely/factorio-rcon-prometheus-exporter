@@ -5,7 +5,7 @@ A Prometheus Exporter that generates metrics by connecting to a Factorio server 
 [ ![npm version](https://img.shields.io/npm/v/factorio-rcon-prometheus-exporter.svg?style=flat) ](https://npmjs.org/package/factorio-rcon-prometheus-exporter "View this project on npm") [ ![Docker Image Version](https://img.shields.io/docker/v/sleavely/factorio-rcon-prometheus-exporter?label=Docker)
 ](https://hub.docker.com/r/sleavely/factorio-rcon-prometheus-exporter) [ ![Issues](https://img.shields.io/github/issues/Sleavely/factorio-rcon-prometheus-exporter.svg?label=Github+issues) ](https://github.com/Sleavely/factorio-rcon-prometheus-exporter/issues)
 
-![Sample Grafana dashboard using the metrics recorded by factorio-rcon-prometheus-exporter](https://i.imgur.com/77quJe2.png)
+![Sample Grafana dashboard using the metrics recorded by factorio-rcon-prometheus-exporter](https://i.imgur.com/ff2I6X8.png)
 
 ## Usage
 
@@ -26,6 +26,10 @@ With Docker Compose:
       - RCON_HOST=my-factorio-server
       - RCON_PORT=27015
       - RCON_PASSWORD=
+      # The factorio_available_items metric counts items on belts, in chests, etc.
+      # This can cause the server to momentarily freeze, so by default it only does it when no players are online.
+      # To change this, set COUNT_AVAILABLE_ITEMS to "never", or "always"
+      - COUNT_AVAILABLE_ITEMS=
 ```
 
 Then, in your Prometheus configuration:
@@ -33,7 +37,9 @@ Then, in your Prometheus configuration:
 ```yaml
 scrape_configs:
   - job_name: factorio
-    scrape_interval: 60s
+    # A lower interval generates datapoints more often,
+    # but can cause noticeable freezes on large factories.
+    scrape_interval: 15s
     static_configs:
     - targets:
       - factorio-rcon-prometheus-exporter:9772
@@ -48,4 +54,4 @@ These repositories also export metrics using the RCON approach:
 
 The more popular approach and most complete exporter requires you to install a mod:
 
-- [remijouannet/graftorio2](https://github.com/remijouannet/graftorio2) which
+- [remijouannet/graftorio2](https://github.com/remijouannet/graftorio2)

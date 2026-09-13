@@ -1,6 +1,6 @@
 {
   "name": "factorio-rcon-prometheus-exporter",
-  "version": "1.1.0",
+  "version": "2.2.2",
   "description": "A Prometheus exporter that connects to a Factorio server via RCON and exports metrics.",
   "author": "Joakim Hedlund <contact@joakimhedlund.com>",
   "license": "MIT",
@@ -24,6 +24,7 @@
   ],
   "scripts": {
     "dev": "tsx --no-warnings --env-file=.env --watch-path=./bin --watch-path=./src ./bin/cli.ts",
+    "once": "tsx --no-warnings --env-file=.env ./bin/cli.ts",
     "prebuild": "rm -rf dist",
     "build": "esbuild --bundle --platform=node --packages=external --sourcemap --outdir=./dist/ ./bin/*.ts && cp ./src/*.lua ./dist/",
     "luacheck": "docker run --rm --volume=\"`pwd`\":\"/${PWD##*/}\" --workdir=\"/${PWD##*/}\" pipelinecomponents/luacheck  luacheck src/",
