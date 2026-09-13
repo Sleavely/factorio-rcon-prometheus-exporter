@@ -37,7 +37,9 @@ Then, in your Prometheus configuration:
 ```yaml
 scrape_configs:
   - job_name: factorio
-    scrape_interval: 60s
+    # A lower interval generates datapoints more often,
+    # but can cause noticeable freezes on large factories.
+    scrape_interval: 15s
     static_configs:
     - targets:
       - factorio-rcon-prometheus-exporter:9772
